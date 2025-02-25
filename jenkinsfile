@@ -3,7 +3,12 @@ pipeline {
 
     tools { 
         jdk 'JAVA_HOME' 
-        maven 'M2_HOME' // Utilise le bon nom défini dans Jenkins
+        maven 'M2_HOME'
+    }
+
+    environment {
+        MAVEN_USERNAME = credentials('nexus-username') // Replace 'nexus-username' with your actual Jenkins credentials ID
+        MAVEN_PASSWORD = credentials('nexus-password') // Replace 'nexus-password' with your actual Jenkins credentials ID
     }
 
     stages {
@@ -20,14 +25,15 @@ pipeline {
             }
         }
 
-
         stage('Deploy to Nexus') {
             steps {
                 script {
-                        sh 'mvn deploy -Dmaven.test.skip=true' ;
-                    }
+                    // Use Maven settings.xml for passing credentials securely
+                    sh """
+                        mvn deploy -Dmaven.test.skip=true -Dusername=${MAVEN_USERNAME} -Dpassword=${MAVEN_PASSWORD}
+                    """
                 }
             }
         }
     }
-
+}
