@@ -7,8 +7,8 @@ pipeline {
     }
 
     environment {
-        MAVEN_USERNAME = credentials('nexus-username') // Replace 'nexus-username' with your actual Jenkins credentials ID
-        MAVEN_PASSWORD = credentials('nexus-password') // Replace 'nexus-password' with your actual Jenkins credentials ID
+        MAVEN_USERNAME = credentials('admin') // Replace 'nexus-username' with your actual Jenkins credentials ID
+        MAVEN_PASSWORD = credentials('nexus') // Replace 'nexus-password' with your actual Jenkins credentials ID
     }
 
     stages {
