@@ -27,15 +27,12 @@ pipeline {
 
         stage('Analyse SonarQube') {
             steps {
-                // Avec injection des credentials et du serveur SonarQube
                 withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    bat """
-                    sonar-scanner ^
-                    -Dsonar.projectKey=mon-projet ^
-                    -Dsonar.projectName=mon-projet ^
-                    -Dsonar.sources=. ^
-                    -Dsonar.host.url=http://localhost:9000
-                    """
+                    // Utilisation du scanner SonarQube installé via Jenkins
+                    bat "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat ^
+                        -Dsonar.projectKey=timesheet-devops
+                        -Dsonar.projectName=Timesheet DevOps
+                        -Dsonar.sources=."
                 }
             }
         }
