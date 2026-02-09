@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        SONARQUBE_ENV = 'SonarQube-Docker' // Nom du serveur SonarQube dans Jenkins
+    }
+
     stages {
 
         stage('Infos Git') {
@@ -21,5 +25,29 @@ pipeline {
             }
         }
 
+        stage('Analyse SonarQube') {
+            steps {
+                // Avec injection des credentials et du serveur SonarQube
+                withSonarQubeEnv("${SONARQUBE_ENV}") {
+                    bat """
+                    sonar-scanner ^
+                    -Dsonar.projectKey=mon-projet ^
+                    -Dsonar.projectName=mon-projet ^
+                    -Dsonar.sources=. ^
+                    -Dsonar.host.url=http://localhost:9000
+                    """
+                }
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo "Pipeline terminée avec succès ✅"
+        }
+        failure {
+            echo "Pipeline échouée ❌"
+        }
     }
 }
