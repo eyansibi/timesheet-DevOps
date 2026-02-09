@@ -7,32 +7,17 @@ pipeline {
 
     stages {
 
-        stage('Infos Git') {
-            steps {
-                bat 'git --version'
-            }
-        }
-
-        stage('Nombre de commits') {
-            steps {
-                bat 'git rev-list --count HEAD'
-            }
-        }
-
-        stage('Liste des commits') {
-            steps {
-                bat 'git log --oneline -5'
-            }
-        }
-
         stage('Analyse SonarQube') {
             steps {
+                echo 'Analyse SonarQube en cours...'
                 withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    // Utilisation du scanner SonarQube installé via Jenkins
-                    bat "%SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat ^
-                        -Dsonar.projectKey=timesheet-devops
-                        -Dsonar.projectName=Timesheet DevOps
-                        -Dsonar.sources=."
+                    // Utilisation du scanner installé via Jenkins
+                    bat """
+                    %SONAR_SCANNER_HOME%\\bin\\sonar-scanner.bat ^
+                        -Dsonar.projectKey=springboot-pfe ^
+                        -Dsonar.projectName=Spring Boot PFE ^
+                        -Dsonar.sources=.
+                    """
                 }
             }
         }
@@ -41,10 +26,10 @@ pipeline {
 
     post {
         success {
-            echo "Pipeline terminée avec succès ✅"
+            echo 'Analyse SonarQube terminée avec succès ✅'
         }
         failure {
-            echo "Pipeline échouée ❌"
+            echo 'Analyse SonarQube échouée ❌'
         }
     }
 }
