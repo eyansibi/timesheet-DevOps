@@ -1,32 +1,25 @@
 pipeline {
     agent any
 
-    tools { 
-        jdk 'JAVA_HOME' 
-        maven 'M2_HOME' // Utilise le bon nom défini dans Jenkins
-    }
-
     stages {
-        stage('GIT') {
+
+        stage('Infos Git') {
             steps {
-                git branch: 'master',
-                    url: 'https://github.com/eyansibi/timesheet-DevOps.git'
+                bat 'git --version'
             }
         }
 
-        stage('Compile Stage') {
+        stage('Nombre de commits') {
             steps {
-                sh 'mvn clean compile'
+                bat 'git rev-list --count HEAD'
             }
         }
 
-stage('Deploy to Nexus') {
+        stage('Liste des commits') {
             steps {
-                script {
-                        sh 'mvn install -Dmaven.test.skip=true' ;
-                    }
-                }
+                bat 'git log --oneline -5'
             }
-        
         }
+
     }
+}
